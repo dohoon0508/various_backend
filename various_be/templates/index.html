@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI 벌금 조회</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { width: 400px; margin: 0 auto; }
+        input, button { width: 100%; margin: 5px 0; padding: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid black; padding: 10px; text-align: center; }
+        .response { margin-top: 20px; font-weight: bold; color: blue; }
+    </style>
+</head>
+<body>
+    <h2>FastAPI 벌금 조회 시스템</h2>
+
+    <div class="container">
+        <h3>전체 벌금 조회</h3>
+        <button onclick="getFine()">벌금 조회</button>
+        <div class="response" id="fineResponse"></div>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+
+        async function getFine() {
+            const response = await fetch(`${API_URL}/fine/total`);
+            const data = await response.json();
+
+            let userListHTML = `<table>
+                <tr><th>유저 닉네임</th><th>개인 벌금 (원)</th></tr>`;
+            data.users.forEach(user => {
+                userListHTML += `<tr><td>${user.username}</td><td>${user.accumulated_fine}</td></tr>`;
+            });
+            userListHTML += `</table>`;
+
+            document.getElementById("fineResponse").innerHTML = `
+                <h3>개별 벌금 현황</h3>
+                ${userListHTML}
+                <hr>
+                <p><strong>총 벌금:</strong> ${data.total_fine} 원</p>
+                <p>${data.message}</p>
+            `;
+        }
+    </script>
+
+</body>
+</html>
