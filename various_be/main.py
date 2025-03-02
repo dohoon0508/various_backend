@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware  # ✅ 추가해야 함
 from various_be import auth, mission, fine, upload
 from various_be.database import Base, engine
 
@@ -14,6 +15,10 @@ app.add_middleware(
     allow_methods=["*"],  # 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
     allow_headers=["*"],  # 모든 헤더 허용
 )
+
+
+# ✅ SessionMiddleware 추가 (세션 저장을 위해 secret_key 필요)
+app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
 
 # ✅ DB 테이블 생성
 Base.metadata.create_all(bind=engine)
