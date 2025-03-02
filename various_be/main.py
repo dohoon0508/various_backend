@@ -1,20 +1,24 @@
 from fastapi import FastAPI
-from starlette.middleware.sessions import SessionMiddleware
-
-# ✅ 내부 모듈 import (경로 문제 해결)
-from various_be.database import Base, engine
+from fastapi.middleware.cors import CORSMiddleware
 from various_be import auth, mission, fine, upload
+from various_be.database import Base, engine
 
 # FastAPI 앱 생성
 app = FastAPI()
 
-# 세션 미들웨어 추가 (로그인 상태 유지)
-app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
+# ✅ 🔥 CORS 설정 추가 (React와 연결 허용)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React 앱의 URL 추가 (필요하면 여러 개 가능)
+    allow_credentials=True,  # 쿠키 포함 요청 허용
+    allow_methods=["*"],  # 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
+    allow_headers=["*"],  # 모든 헤더 허용
+)
 
-# 데이터베이스 테이블 자동 생성
+# ✅ DB 테이블 생성
 Base.metadata.create_all(bind=engine)
 
-# API 라우트 추가
+# ✅ API 라우트 추가
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(mission.router, prefix="/mission", tags=["Mission"])
 app.include_router(fine.router, prefix="/fine", tags=["Fine"])
