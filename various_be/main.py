@@ -1,19 +1,28 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 from fastapi import FastAPI
-from starlette.middleware.sessions import SessionMiddleware
-import auth, mission, fine, upload
-from database import Base, engine
 
-# FastAPI 인스턴스 생성
 app = FastAPI()
 
-# 세션 미들웨어 추가
-app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
+# MySQL 연결 정보
+DATABASE_URL = "mysql+pymysql://root:ASdh%402304@localhost/various"
 
-# 데이터베이스 테이블 생성
+# 데이터베이스 엔진 생성
+engine = create_engine(DATABASE_URL)
+
+# 세션 로컬 생성
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# SQLAlchemy 모델의 베이스 클래스
+Base = declarative_base()
+
+def get_db():
+    """데이터베이스 세션을 가져오는 함수"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# ✅ 테이블 자동 생성 실행 (이 코드가 필요!)
 Base.metadata.create_all(bind=engine)
-
-# 라우트 추가
-app.include_router(auth.router, prefix="/auth", tags=["Auth"])
-app.include_router(mission.router, prefix="/mission", tags=["Mission"])
-app.include_router(fine.router, prefix="/fine", tags=["Fine"])
-app.include_router(upload.router, prefix="/upload", tags=["Upload"])
