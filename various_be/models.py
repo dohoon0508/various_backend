@@ -20,13 +20,12 @@ class Mission(Base):
     total_attempts = Column(Integer, default=0)  # 전체 시도 횟수
     success_count = Column(Integer, default=0)  # 성공 횟수
     failure_count = Column(Integer, default=0)  # 실패 횟수
-    mission_time = Column(Time, nullable=False)  # 미션 수행 시간
-    image_path = Column(String(255), nullable=True)  # 업로드한 이미지 경로
+    mission_time = Column(Time, nullable=True)  # ✅ 미션 수행 시간이 없을 수도 있음
+    image_path = Column(String(255), nullable=True)  # ✅ 미션을 안 올릴 수도 있음
 
 # ✅ 벌금 테이블
 class Fine(Base):
     __tablename__ = "fines"
-    
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 사용자 ID
     total_fine = Column(Integer, default=0)  # 전체 벌금
