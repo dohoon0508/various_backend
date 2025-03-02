@@ -8,6 +8,11 @@ class UserCreate(BaseModel):
     password: str
     username: str
 
+# ✅ 로그인 요청 데이터 검증
+class UserLogin(BaseModel):
+    userid: str
+    password: str
+
 # ✅ 미션 관련 요청 데이터 검증
 class MissionCreate(BaseModel):
     mission_date: date
