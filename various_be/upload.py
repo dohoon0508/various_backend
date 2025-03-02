@@ -1,16 +1,14 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile
 import os
 import shutil
 
-UPLOAD_DIR = "static/uploads/"
 router = APIRouter()
+UPLOAD_DIR = "static/uploads/"
 
-# 이미지 업로드 API
 @router.post("/")
 async def upload_image(file: UploadFile = File(...)):
     file_location = os.path.join(UPLOAD_DIR, file.filename)
     
-    # 이미지 파일 저장
     with open(file_location, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     

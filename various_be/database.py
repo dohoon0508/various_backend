@@ -1,20 +1,22 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# DATABASE_URL = "mysql+pymysql://sql이름:패스워드@접속주소/데이터베이스 이름" 
+# ✅ MySQL 연결 정보 (환경 변수 적용 가능)
 DATABASE_URL = f"mysql+pymysql://root:{'ASdh%402304'}@localhost/various"
 
+# DB 엔진 생성
 engine = create_engine(DATABASE_URL)
+
+# 세션 생성
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
+# SQLAlchemy Base 모델
 Base = declarative_base()
 
+# DB 세션 생성 함수
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-        
-Base.metadata.create_all(bind=engine)

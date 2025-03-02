@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey
-from database import Base
+from various_be.database import Base
 
-# 유저 테이블 (회원 정보 저장)
+# ✅ 유저 테이블
 class User(Base):
     __tablename__ = "users"
     
@@ -10,21 +10,24 @@ class User(Base):
     password = Column(String(512), nullable=False)  # 해싱된 비밀번호
     username = Column(String(100), nullable=False)  # 닉네임
 
-# 미션 테이블 (사용자가 수행한 미션 기록 저장)
+# ✅ 미션 테이블
 class Mission(Base):
     __tablename__ = "missions"
     
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 사용자 ID
     mission_date = Column(Date, nullable=False)  # 미션 수행 날짜
+    total_attempts = Column(Integer, default=0)  # 전체 시도 횟수
+    success_count = Column(Integer, default=0)  # 성공 횟수
+    failure_count = Column(Integer, default=0)  # 실패 횟수
     mission_time = Column(Time, nullable=False)  # 미션 수행 시간
     image_path = Column(String(255), nullable=True)  # 업로드한 이미지 경로
 
-# 벌금 테이블 (사용자의 벌금 기록 저장)
+# ✅ 벌금 테이블
 class Fine(Base):
     __tablename__ = "fines"
     
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 사용자 ID
-    total_fine = Column(Integer, default=0)  # 전체 벌금 합계
-    accumulated_fine = Column(Integer, default=0)  # 현재까지 쌓인 벌금
+    total_fine = Column(Integer, default=0)  # 전체 벌금
+    accumulated_fine = Column(Integer, default=0)  # 개인 벌금
